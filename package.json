@@ -5,7 +5,7 @@
         "start": "node dist/app.js",
         "dev": "nodemon ./api/index.ts",
         "test": "echo \"Error: no test specified\" && exit 1",
-        "build": "tsc && tsc-alias"
+        "build": "[my-framework] build --output public"
     },
     "dependencies": {
         "@line/bot-sdk": "^8.0.0",
