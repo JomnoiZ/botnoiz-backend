@@ -27,7 +27,6 @@ type LarngearCampDepartment =
     | 'PR'
     | 'SPONSOR'
     | 'FINANCE'
-    | 'MC'
-    | 'IT';
+    | 'MC';
 
 export type TDepartment = LarngearCampDepartment;

@@ -1,26 +1,12 @@
 import { CreateUserDTO, UpdateUserDTO } from '@/interfaces/user';
 import userService from '@/services/user.service';
-import lineClientUtil from '@/utils/lineClient.util';
 import { Request, Response } from 'express';
 
 async function createUser(req: Request, res: Response) {
     const { displayName, studentId, userId } = req.body as CreateUserDTO;
 
-    console.log('Creating user', displayName, studentId, userId);
+    const existedUser = await userService.findByStudentId(studentId);
 
-    const [existedUser, profile] = await Promise.all([
-        userService.findByStudentId(studentId),
-        lineClientUtil.getProfile(userId),
-    ]);
-
-    console.log('Existed user', existedUser, "Profile", profile);
-
-    if (!profile) {
-        return res.status(400).send({
-            success: false,
-            message: 'Error fetching user profile (createUser)',
-        });
-    }
     if (existedUser) {
         const updatedUser = await userService.updateByStudentId(
             existedUser.studentId,
@@ -81,7 +67,7 @@ async function getUsers(req: Request, res: Response) {
 async function getUserByStudentIdOrUserId(req: Request, res: Response) {
     const { studentId_or_userId } = req.params;
 
-    const isStudentId = /^6[5|6|7]3\d{5}21$/.test(studentId_or_userId);
+    const isStudentId = /^6[4|5|6]3\d{5}21$/.test(studentId_or_userId);
 
     let user = null;
 
@@ -98,15 +84,6 @@ async function getUserByStudentIdOrUserId(req: Request, res: Response) {
         });
     }
 
-    const profile = await lineClientUtil.getProfile(user.userId);
-
-    if (!profile) {
-        return res.status(400).send({
-            success: false,
-            message: 'Error fetching user profile (getUser)',
-        });
-    }
-
     return res.status(200).send({
         success: true,
         message: 'User fetched successfully',
@@ -119,7 +96,7 @@ async function updateUser(req: Request, res: Response) {
 
     const updateBody = req.body as UpdateUserDTO;
 
-    const isStudentId = /^6[5|6|7]3\d{5}21$/.test(studentId_or_userId);
+    const isStudentId = /^6[4|5|6]3\d{5}21$/.test(studentId_or_userId);
 
     let updatedUser = null;
 

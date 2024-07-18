@@ -1,6 +1,6 @@
 {
     "name": "vishnu21-process-bot",
-    "main": "index.ts",
+    "main": "app.ts",
     "scripts": {
         "start": "node dist/app.js",
         "dev": "nodemon ./src/app.ts",
