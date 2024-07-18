@@ -1,9 +1,9 @@
 {
     "name": "vishnu21-process-bot",
-    "main": "app.ts",
+    "main": "index.ts",
     "scripts": {
         "start": "node dist/app.js",
-        "dev": "nodemon ./src/app.ts",
+        "dev": "nodemon ./api/index.ts",
         "test": "echo \"Error: no test specified\" && exit 1",
         "build": "tsc && tsc-alias"
     },
