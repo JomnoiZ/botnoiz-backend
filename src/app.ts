@@ -22,7 +22,7 @@ moment.tz.setDefault('Asia/Bangkok');
 
 mongoose
     .connect(
-        `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@${process.env.MONGO_CLUSTER}.egquqld.mongodb.net/?retryWrites=true&w=majority`
+        `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@${process.env.MONGO_CLUSTER}.5urko2y.mongodb.net/?retryWrites=true&w=majority`
     )
     .then(() => {
         console.log('Database connected ');
@@ -42,12 +42,8 @@ cron.schedule('* * * * *', () => {
 //     await apService.syncSheet(process.env.SHEET_NAME!);
 // });
 
+app.use(cors());
 app.use('/webhook', webhookRoutes);
-app.use(
-    cors({
-        origin: [process.env.CLIENT_URL!],
-    })
-);
 app.use(helmet());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
