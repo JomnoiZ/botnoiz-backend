@@ -67,7 +67,7 @@ async function getUsers(req: Request, res: Response) {
 async function getUserByStudentIdOrUserId(req: Request, res: Response) {
     const { studentId_or_userId } = req.params;
 
-    const isStudentId = /^6[4|5|6]3\d{5}21$/.test(studentId_or_userId);
+    const isStudentId = /^6[5|6|7]3\d{5}21$/.test(studentId_or_userId);
 
     let user = null;
 
@@ -96,7 +96,7 @@ async function updateUser(req: Request, res: Response) {
 
     const updateBody = req.body as UpdateUserDTO;
 
-    const isStudentId = /^6[4|5|6]3\d{5}21$/.test(studentId_or_userId);
+    const isStudentId = /^6[5|6|7]3\d{5}21$/.test(studentId_or_userId);
 
     let updatedUser = null;
 

@@ -1,19 +1,3 @@
-type VishnuDepartment =
-    | 'COOR'
-    | 'PLAN'
-    | 'ACT'
-    | 'ENT'
-    | 'CONTENT'
-    | 'MC'
-    | 'WELFARE'
-    | 'SUPPLY'
-    | 'PLACE'
-    | 'MED'
-    | 'REG'
-    | 'PR'
-    | 'IT'
-    | 'FINANCE';
-
 type LarngearCampDepartment =
     | 'COOP'
     | 'PLAN'
@@ -24,9 +8,10 @@ type LarngearCampDepartment =
     | 'PLACE'
     | 'NURSE'
     | 'REG'
+    | 'IT'
     | 'PR'
     | 'SPONSOR'
     | 'FINANCE'
-    | 'MC';
+    | 'MC'
 
 export type TDepartment = LarngearCampDepartment;

@@ -119,7 +119,7 @@ const getSheet = async (sheet: string) => {
 
             return null;
         })
-        .catch(() => null);
+        .catch((err) => console.log(err));
 
     return slots;
 };
