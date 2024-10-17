@@ -1,0 +1,1 @@
+echo Jomnoiz/backend | tr '[:upper:]' '[:lower:]'
