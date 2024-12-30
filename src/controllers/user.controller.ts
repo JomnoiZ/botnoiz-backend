@@ -1,6 +1,22 @@
+import {
+    TDepartmentColors,
+    LarngearCampDepartment,
+    TDepartment,
+    DepartmentColors,
+} from '@/interfaces/department';
 import { CreateUserDTO, UpdateUserDTO } from '@/interfaces/user';
 import userService from '@/services/user.service';
 import { Request, Response } from 'express';
+
+function createDepartmentColors(
+    defaultColor: TDepartmentColors
+): Record<TDepartment, TDepartmentColors> {
+    const departments = Object.keys(LarngearCampDepartment) as TDepartment[];
+    return departments.reduce((acc, department) => {
+        acc[department] = defaultColor;
+        return acc;
+    }, {} as Record<TDepartment, TDepartmentColors>);
+}
 
 async function createUser(req: Request, res: Response) {
     const { displayName, studentId, userId } = req.body as CreateUserDTO;
@@ -23,6 +39,9 @@ async function createUser(req: Request, res: Response) {
         });
     }
 
+    const initColor = DepartmentColors.purple as TDepartmentColors;
+    const selectedColors = createDepartmentColors(initColor);
+
     const createdUser = await userService.createUser({
         displayName,
         studentId,
@@ -31,6 +50,7 @@ async function createUser(req: Request, res: Response) {
         selectedDepartments: [],
         superuser: false,
         authorized: false,
+        selectedColors,
     });
 
     if (!createdUser) {

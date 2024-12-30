@@ -1,4 +1,4 @@
-import { TDepartment } from './department';
+import { TDepartmentColors, TDepartment } from './department';
 
 export interface CreateUserDTO {
     studentId: string;
@@ -10,6 +10,7 @@ export interface UpdateUserDTO {
     enableBot?: boolean;
     selectedDepartments?: TDepartment[];
     displayName?: string;
+    selectedColors?: Record<TDepartment, TDepartmentColors>;
 }
 
 export interface IUser extends CreateUserDTO {
@@ -17,4 +18,5 @@ export interface IUser extends CreateUserDTO {
     selectedDepartments: TDepartment[];
     superuser: boolean;
     authorized: boolean;
+    selectedColors?: Record<TDepartment, TDepartmentColors>;
 }

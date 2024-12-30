@@ -1,4 +1,5 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import { TDepartmentColors, TDepartment } from '@/interfaces/department';
+import mongoose, { Schema, Document, SchemaType } from 'mongoose';
 
 interface User extends Document {
     studentId: string;
@@ -8,6 +9,7 @@ interface User extends Document {
     selectedDepartments: string[];
     superuser: boolean;
     authorized: boolean;
+    selectedColors: Record<TDepartment, TDepartmentColors>;
 }
 
 const UserSchema: Schema<User> = new Schema({
@@ -18,6 +20,7 @@ const UserSchema: Schema<User> = new Schema({
     selectedDepartments: { type: [String], required: true, default: [] },
     superuser: { type: Boolean, required: true, default: false },
     authorized: { type: Boolean, required: true, default: false },
+    selectedColors: { type: Schema.Types.Mixed, required: false, default: {} },
 });
 
 const UserModel = mongoose.model<User>('User', UserSchema);
