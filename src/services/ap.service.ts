@@ -7,6 +7,7 @@ import messageTemplate from '@/templates/message.template';
 import flexTemplate from '@/templates/flex.template';
 import messageUtil from '@/utils/message.util';
 import userService from './user.service';
+import { DepartmentColors } from '@/interfaces/department';
 import { FlexBubble } from '@line/bot-sdk';
 
 const create = async (body: ISlot) => {
@@ -89,8 +90,10 @@ const updateBySlot = async (
         contact?: string;
         note?: string;
         announced?: boolean;
+        totalOffset?: number;
     }
 ) => {
+    console.log(slot,body)
     const updatedSlot = await ApModel.findOneAndUpdate(
         {
             slot,
@@ -145,8 +148,7 @@ const syncSheet = async (sheet: string) => {
         slot.end = end;
 
         if (!existedSlot) {
-            const createdSlot = await create({ ...slot, announced: false });
-
+            const createdSlot = await create({ ...slot, announced: false, totalOffset: 0 });
             return createdSlot;
         }
 
@@ -232,7 +234,7 @@ const multicastAnnounceSlots = async () => {
     }
 
     const userContents = {} as {
-        [key: string]: number[];
+        [key: string]: { slot: number; slotColor: string }[];
     };
 
     for (const user of users) {
@@ -250,29 +252,54 @@ const multicastAnnounceSlots = async () => {
                     });
                 }
 
-                userContents[user.userId as keyof typeof userContents].push(
-                    slot.slot
-                );
+                userContents[user.userId as keyof typeof userContents].push({
+                    slot: slot.slot,
+                    slotColor: DepartmentColors[user.selectedColors[slot.department] as keyof typeof DepartmentColors],
+                });
             }
         }
     }
+
+    // const sampleUserContents = {
+    //     user1: [
+    //         { slot: 1, slotColor: 'red' },
+    //         { slot: 2, slotColor: 'blue' },
+    //     ],
+    //     user2: [
+    //         { slot: 1, slotColor: 'green' },
+    //         { slot: 3, slotColor: 'yellow' },
+    //     ],
+    //     user3: [
+    //         { slot: 2, slotColor: 'purple' },
+    //         { slot: 3, slotColor: 'orange' },
+    //     ],
+    //     user4: [
+    //         { slot: 2, slotColor: 'purple' },
+    //         { slot: 3, slotColor: 'orange' },
+    //     ],
+    // };
+
 
     const groupedUserContents = messageUtil.groupMessage(userContents);
 
     console.log('Contents', groupedUserContents);
 
     for (const key of Object.keys(groupedUserContents)) {
-        const slotIndexes = JSON.parse(key) as number[];
+        const slotIndexes = JSON.parse(key) as { slot: number; slotColor: string }[];
         const userIds = groupedUserContents[key];
 
-        const slots = [] as ISlot[];
+        interface ISlotwColor extends ISlot {
+            slotColor?: string;
+        }
+        const slots = [] as ISlotwColor[];
 
         slotIndexes.forEach((slotIndex) => {
             const slot = announcingSlots.find(
-                (slot) => slot.slot === slotIndex
+                (slot) => slot.slot === slotIndex.slot
             );
 
             if (slot) slots.push(slot);
+            slots[slots.length -1].slotColor = slotIndex.slotColor;
         });
 
         const contents = slots
@@ -298,6 +325,7 @@ const multicastAnnounceSlots = async () => {
                     note: slot.note,
                     contactName: contactMatches ? contactMatches[1] : '-',
                     contactTel: contactMatches ? contactMatches[2] : '-',
+                    slotColor: slot.slotColor?? '#8B5CF6',
                 });
 
                 return content;
@@ -372,6 +400,7 @@ const setOffset = async (
             .utcOffset(7)
             .add(offset, 'minutes')
             .format();
+        const totalOffset = (slot.totalOffset??0)+offset;
 
         console.log(
             `${slot.slot}, ${moment(slot.start).format('HH:mm')} -> ${moment(
@@ -384,11 +413,13 @@ const setOffset = async (
         const updatedSlot = (await updateBySlot(slot.slot, {
             start,
             end,
+            totalOffset,
         })) as ISlot;
 
         updatedSlots.push(updatedSlot);
     }
 
+    const totalOffset = updatedSlots[0]?.totalOffset || 0;
     const sheetUpdateData = {} as Record<string, any>;
 
     for (const slot of updatedSlots) {
@@ -398,12 +429,12 @@ const setOffset = async (
         sheetUpdateData[`C${slot.slot + 2}`] = moment(slot.end).format('HH:mm');
     }
 
-    const content = flexTemplate.setOffsetBubble({ slot, offset, displayName });
+    const content = flexTemplate.setOffsetBubble({ slot, offset, displayName, totalOffset });
 
     const message = messageTemplate.flex({
         altText: `${
             offset === 0 ? 0 : offset > 0 ? `+${offset}` : offset
-        } นาที ตั้งแต่ Slot ที่ ${slot} เป็นต้นไปโดย ${displayName} `,
+        } นาที ตั้งแต่ Slot ที่ ${slot} เป็นต้นไป - "${totalOffset === 0 ? 'Set Zero' : `รวม ${totalOffset} นาที`}" โดย ${displayName} `,
         contents: content,
     });
 

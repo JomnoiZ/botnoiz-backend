@@ -12,6 +12,7 @@ interface Ap extends Document {
     contact: string;
     note?: string;
     announced?: boolean;
+    totalOffset: number;
 }
 
 const ApSchema: Schema<Ap> = new Schema({
@@ -25,6 +26,7 @@ const ApSchema: Schema<Ap> = new Schema({
     contact: { type: String, required: false },
     note: { type: String, required: false },
     announced: { type: Boolean, required: false },
+    totalOffset: { type: Number, required: false },
 });
 
 const ApModel = mongoose.model<Ap>('Ap', ApSchema);

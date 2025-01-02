@@ -11,6 +11,7 @@ const slotBubble = ({
     note,
     contactName,
     contactTel,
+    slotColor,
 }: {
     slot: number;
     department: TDepartment;
@@ -21,6 +22,7 @@ const slotBubble = ({
     note: string;
     contactName: string;
     contactTel: string;
+    slotColor: string;
 }): FlexBubble => {
     return {
         type: 'bubble',
@@ -37,7 +39,7 @@ const slotBubble = ({
                             type: 'text',
                             text: `#${slot} | ${department}`,
                             weight: 'bold',
-                            color: '#8B5CF6',
+                            color: '#F8FAFC',
                             size: 'xs',
                         },
                         {
@@ -50,7 +52,7 @@ const slotBubble = ({
                         },
                     ],
                     paddingAll: 'xxl',
-                    backgroundColor: '#020617',
+                    backgroundColor: `${slotColor}`,
                 },
                 {
                     type: 'box',
@@ -143,7 +145,7 @@ const slotBubble = ({
                                         label: `โทรหา ${contactName}`,
                                         uri: `tel:${contactTel}`,
                                     },
-                                    color: '#334155',
+                                    color: '#233145',
                                     height: 'sm',
                                 },
                             ],
@@ -169,10 +171,12 @@ const setOffsetBubble = ({
     slot,
     offset,
     displayName,
+    totalOffset,
 }: {
     slot: number;
     offset: number;
     displayName: string;
+    totalOffset: number;
 }): FlexBubble => {
     return {
         type: 'bubble',
@@ -221,6 +225,14 @@ const setOffsetBubble = ({
                                 {
                                     type: 'text',
                                     text: `Slot #${slot} เป็นต้นไป`,
+                                    size: 'xl',
+                                    weight: 'bold',
+                                    wrap: true,
+                                    color: '#1E293B',
+                                },
+                                {
+                                    type: 'text',
+                                    text: `"${totalOffset === 0 ? 'Set Zero' : `รวม ${totalOffset} นาที`}"`,
                                     size: 'xl',
                                     weight: 'bold',
                                     wrap: true,
