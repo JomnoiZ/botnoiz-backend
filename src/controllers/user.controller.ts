@@ -11,9 +11,27 @@ import { Request, Response } from 'express';
 function createDepartmentColors(
     defaultColor: TDepartmentColors
 ): Record<TDepartment, TDepartmentColors> {
+    const departmentColors: Record<TDepartment, TDepartmentColors> = {
+        BOARD: "default",
+        PLAN: "blue",
+        COOP: "yellow",
+        ACT: "red",
+        MC: "red",
+        SUPPLY: "teal",
+        PLACE: "orange",
+        NURSE: "pink",
+        REG: "orange",
+        IT: "default",
+        PR: "default",
+        FINANCE: "default",
+        VCK: "green",
+        SECURITY: "pink",
+        SPONSOR: "default"
+    };
+
     const departments = Object.keys(LarngearCampDepartment) as TDepartment[];
     return departments.reduce((acc, department) => {
-        acc[department] = defaultColor;
+        acc[department] = departmentColors[department] || defaultColor;
         return acc;
     }, {} as Record<TDepartment, TDepartmentColors>);
 }
@@ -39,7 +57,7 @@ async function createUser(req: Request, res: Response) {
         });
     }
 
-    const initColor = DepartmentColors.purple as TDepartmentColors;
+    const initColor = 'default';
     const selectedColors = createDepartmentColors(initColor);
 
     const createdUser = await userService.createUser({
