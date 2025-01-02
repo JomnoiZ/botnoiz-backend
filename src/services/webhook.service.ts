@@ -20,6 +20,7 @@ export const announceSlot = async (event: TextEvent, slots: ISlot[]) => {
             note: slot.note,
             contactName: 'เติ้ล',
             contactTel: '0897991699',
+            slotColor: '#FFC107', // Amber
         });
 
         return content;
