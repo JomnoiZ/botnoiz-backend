@@ -39,3 +39,7 @@ jobs:
 
             - name: Image details
               run: docker images ghcr.io/${{ env.REPO_NAME }}:latest
+
+permissions:
+  contents: read
+  packages: write
